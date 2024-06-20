@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User{
+  id Int @id @default(autoincrement())
+  area String
+  name String
+  email String
+  password String
+}
+
+model Client {
+  id               Int      @id @default(autoincrement())
+  name             String
+  surname          String
+  socialsecuritynumber String
+  dateofbirth      DateTime 
+  age              String      
+  address          String
+  location         String
+  phone            String
+  email            String
+  healthinsurance  String
+  observation      String
+  turno            String   
+  archivos         Archivo[]
+  resultados       Result[] 
+}
+
+model Result {
+  id         Int        @id @default(autoincrement())
+  codigo     String     
+  determinacion String   
+  unidadBase String      
+  valor      String      
+
+  
+  clientId   Int
+  client     Client     @relation(fields: [clientId], references: [id])
+
+  
+  archivos   Archivo[]  
+}
+
+
+model Nomenclatura {
+  id            Int      @id @default(autoincrement())
+  codigo        String
+  determinacion String
+  unidadBase    String   @map("U.B")
+  valor         String
+}
+
+model Archivo {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  ruta      String
+  formato   String
+  createdAt DateTime @default(now())
+
+  // Relación opcional con Client
+  clientId  Int?
+  client    Client?  @relation(fields: [clientId], references: [id])
+
+  // Relación opcional con Result
+  resultId  Int?
+  result    Result?  @relation(fields: [resultId], references: [id])
+}
