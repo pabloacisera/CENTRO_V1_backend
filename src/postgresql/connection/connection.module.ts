@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common'
+import { Module } from '@nestjs/common';
 import { ConnectionService } from './connection.service';
 
 @Module({
   providers: [ConnectionService],
-  exports:[ConnectionService]
+  exports: [ConnectionService],
 })
-export class connModule {}
+// eslint-disable-next-line prettier/prettier
+export class connModule {}                                
