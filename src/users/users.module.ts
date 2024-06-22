@@ -7,5 +7,6 @@ import { ConnectionService } from 'src/postgresql/connection/connection.service'
   imports:[],
   controllers: [UsersController],
   providers: [UsersService, ConnectionService],
+  exports:[]
 })
 export class UsersModule {}

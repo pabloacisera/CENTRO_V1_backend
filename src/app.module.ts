@@ -5,7 +5,7 @@ import { ConnectionService } from './postgresql/connection/connection.service';
 import { UsersModule } from './users/users.module';
 import * as cookieParser from 'cookie-parser';
 import { ClassTransformer } from 'class-transformer';
-import { validate } from 'class-validator';
+
 
 
 @Module({
