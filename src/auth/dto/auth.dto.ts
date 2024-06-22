@@ -1,13 +1,7 @@
 import { Transform } from 'class-transformer';
 import { IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateUserDto {
-  @IsString()
-  area: string;
-
-  @IsString()
-  name: string;
-
+export class AuthDto {
   @IsEmail()
   email: string;
 

@@ -4,9 +4,9 @@ import { UsersController } from './users.controller';
 import { ConnectionService } from 'src/postgresql/connection/connection.service';
 
 @Module({
-  imports:[],
+  imports: [],
   controllers: [UsersController],
   providers: [UsersService, ConnectionService],
-  exports:[]
+  exports: [],
 })
 export class UsersModule {}

@@ -1,4 +1,4 @@
-import { Injectable, Res } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -6,10 +6,7 @@ import { ConnectionService } from 'src/postgresql/connection/connection.service'
 
 @Injectable()
 export class UsersService {
-
-  constructor(
-    private readonly prisma: ConnectionService,
-  ) {}
+  constructor(private readonly prisma: ConnectionService) {}
 
   private saltRounds = 10;
 
@@ -17,7 +14,6 @@ export class UsersService {
     const { area, name, email, password } = userDto;
 
     try {
-      // Verificar si el usuario ya existe en la base de datos
       const userFind = await this.prisma.user.findFirst({
         where: {
           email: {
@@ -27,13 +23,11 @@ export class UsersService {
       });
 
       if (userFind) {
-        throw new Error('El email ya existe en base de datos');
+        throw new BadRequestException('El email ya existe en base de datos');
       }
 
-      // Hashear la contraseña antes de guardarla en la base de datos
-      const passHash = await bcrypt.hash(password, 10); // Cambia 10 por this.saltRounds si es necesario
+      const passHash = await bcrypt.hash(password, this.saltRounds);
 
-      // Crear un nuevo usuario en la base de datos utilizando Prisma
       const user = await this.prisma.user.create({
         data: {
           area: area,
@@ -43,35 +37,47 @@ export class UsersService {
         },
       });
 
-      // Devolver los datos del usuario recién creado
       return user;
     } catch (error) {
-      // Capturar y relanzar el error para que el controlador pueda manejarlo
       throw new Error(error.message);
     }
   }
   async findAll() {
-    const users = await this.prisma.user.findMany();
-    return users;
+    try {
+      const users = await this.prisma.user.findMany();
+      return users;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findOne(id: number) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    return user;
+    try {
+      const user = await this.prisma.user.findUnique({ where: { id } });
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.user.update({
-      where: { id },
-      data: updateUserDto,
-    });
-    return user;
+    try {
+      const user = await this.prisma.user.update({
+        where: { id },
+        data: updateUserDto,
+      });
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async remove(id: number) {
-    const user = await this.prisma.user.delete({ where: { id } });
-    return user;
+    try {
+      const user = await this.prisma.user.delete({ where: { id } });
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }
-  
-  
