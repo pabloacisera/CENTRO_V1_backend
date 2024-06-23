@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  HttpException,
+  HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,7 +34,7 @@ export class UsersController {
       const user = await this.usersService.findAll();
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(error.messge, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -41,7 +44,14 @@ export class UsersController {
       const user = await this.usersService.findOne(+id);
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
@@ -51,7 +61,7 @@ export class UsersController {
       const user = await this.usersService.update(+id, updateUserDto);
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -61,7 +71,7 @@ export class UsersController {
       const user = await this.usersService.remove(+id);
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

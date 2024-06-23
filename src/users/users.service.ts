@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -50,7 +56,7 @@ export class UsersService {
         email,
       };
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException('Error al crear usuario', 500);
     }
   }
   async findAll() {
@@ -58,16 +64,21 @@ export class UsersService {
       const users = await this.prisma.user.findMany();
       return users;
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(
+        'Error al obtener la lista de usuarios',
+      );
     }
   }
 
   async findOne(id: number) {
     try {
       const user = await this.prisma.user.findUnique({ where: { id } });
+      if (!user) {
+        throw new NotFoundException(`Usuario ${id} no encontrado`);
+      }
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException('Error al obtener usuario');
     }
   }
 
@@ -79,7 +90,7 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException('Error al actualizar usuario');
     }
   }
 
@@ -88,7 +99,7 @@ export class UsersService {
       const user = await this.prisma.user.delete({ where: { id } });
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException('Error al eliminar usuario');
     }
   }
 }

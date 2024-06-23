@@ -1,4 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { ConnectionService } from 'src/postgresql/connection/connection.service';
@@ -7,39 +13,79 @@ import { ConnectionService } from 'src/postgresql/connection/connection.service'
 export class ClientService {
   constructor(private readonly prisma: ConnectionService) {}
   async create(clientDto: CreateClientDto) {
-    const newClient = await this.prisma.client.create({
-      data: {
-        name: clientDto.name,
-        surname: clientDto.surname,
-        socialsecuritynumber: clientDto.socialSecurityNumber,
-        dateofbirth: clientDto.toDateOfbirth().toISOString(),
-        age: clientDto.age,
-        address: clientDto.address,
-        location: clientDto.location,
-        phone: clientDto.phone,
-        email: clientDto.email,
-        healthinsurance: clientDto.healthInsurance,
-        observation: clientDto.observation,
-        turno: clientDto.turno,
-      },
-    });
-    return newClient;
+    if (
+      !clientDto.name ||
+      !clientDto.socialSecurityNumber ||
+      !clientDto.email
+    ) {
+      throw new BadRequestException('Invalid Request Data');
+    }
+    try {
+      const newClient = await this.prisma.client.create({
+        data: {
+          name: clientDto.name,
+          surname: clientDto.surname,
+          socialsecuritynumber: clientDto.socialSecurityNumber,
+          dateofbirth: clientDto.toDateOfbirth().toISOString(),
+          age: clientDto.age,
+          address: clientDto.address,
+          location: clientDto.location,
+          phone: clientDto.phone,
+          email: clientDto.email,
+          healthinsurance: clientDto.healthInsurance,
+          observation: clientDto.observation,
+          turno: clientDto.turno,
+        },
+      });
+      return newClient;
+    } catch (error) {
+      throw new HttpException('Error al crear cliente', 500);
+    }
   }
 
-  findAll() {
-    return `This action returns all client`;
+  async findAll() {
+    try {
+      const response = await this.prisma.client.findMany();
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al obtener la lista de clientes',
+      );
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} client`;
+  async findOne(id: number) {
+    try {
+      const response = await this.prisma.client.findUnique({ where: { id } });
+      if (!response) {
+        throw new NotFoundException(`Cliente ${id} no encontrado`);
+      }
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al obtener cliente');
+    }
   }
 
-  update(id: number, updateClientDto: UpdateClientDto) {
-    console.log(updateClientDto);
-    return `This action updates a #${id} client`;
+  async update(id: number, updateClientDto: UpdateClientDto) {
+    try {
+      const response = await this.prisma.client.update({
+        where: { id },
+        data: updateClientDto,
+      });
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al actualizar el cliente');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} client`;
+  async remove(id: number) {
+    try {
+      const response = await this.prisma.client.delete({
+        where: { id },
+      });
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al eliminar cliete');
+    }
   }
 }
