@@ -6,11 +6,12 @@ import { UsersModule } from './users/users.module';
 import * as cookieParser from 'cookie-parser';
 import { ClassTransformer } from 'class-transformer';
 import { AuthModule } from './auth/auth/auth.module';
+import { ClientModule } from './client/client.module';
 
 
 
 @Module({
-  imports: [UsersModule, AuthModule],
+  imports: [UsersModule, AuthModule, ClientModule],
   controllers: [AppController],
   providers: [AppService, ConnectionService, ClassTransformer],
 })

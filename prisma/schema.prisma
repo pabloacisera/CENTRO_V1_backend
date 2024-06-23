@@ -14,12 +14,13 @@ datasource db {
 }
 
 
-model User{
-  id Int @id @default(autoincrement())
-  area String
-  name String
-  email String
+model User {
+  id       Int     @id @default(autoincrement())
+  area     String
+  name     String
+  email    String @unique
   password String
+  clients  UserClient[]
 }
 
 model Client {
@@ -38,6 +39,18 @@ model Client {
   turno            String   
   archivos         Archivo[]
   resultados       Result[] 
+  users            UserClient[]
+}
+
+model UserClient {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  user       User    @relation(fields: [userId], references: [id])
+  clientId   Int
+  client     Client  @relation(fields: [clientId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, clientId])
 }
 
 model Result {
@@ -47,14 +60,11 @@ model Result {
   unidadBase String      
   valor      String      
 
-  
   clientId   Int
   client     Client     @relation(fields: [clientId], references: [id])
 
-  
   archivos   Archivo[]  
 }
-
 
 model Nomenclatura {
   id            Int      @id @default(autoincrement())
