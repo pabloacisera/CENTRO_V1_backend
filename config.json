@@ -1,5 +1,0 @@
-{
-  "jwt": {
-    "secret": "your_secret_key_here"
-  }
-}

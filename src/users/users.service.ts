@@ -3,10 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { ConnectionService } from 'src/postgresql/connection/connection.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: ConnectionService) {}
+  constructor(
+    private readonly prisma: ConnectionService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   private saltRounds = 10;
 
@@ -37,7 +41,14 @@ export class UsersService {
         },
       });
 
-      return user;
+      const payload = { email: user.email };
+      const token = await this.jwtService.signAsync(payload);
+
+      return {
+        token,
+        area,
+        email,
+      };
     } catch (error) {
       throw new Error(error.message);
     }
