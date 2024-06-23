@@ -9,10 +9,12 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ProtectedRouteGuard } from 'src/protected-route/protected-route.guard';
 
 @Controller('users')
 export class UsersController {
@@ -39,6 +41,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(ProtectedRouteGuard)
   async findOne(@Param('id') id: string) {
     try {
       const user = await this.usersService.findOne(+id);
@@ -56,6 +59,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseGuards(ProtectedRouteGuard)
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     try {
       const user = await this.usersService.update(+id, updateUserDto);
@@ -66,6 +70,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(ProtectedRouteGuard)
   async remove(@Param('id') id: string) {
     try {
       const user = await this.usersService.remove(+id);
