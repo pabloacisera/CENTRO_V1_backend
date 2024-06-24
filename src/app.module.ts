@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import * as cookieParser from 'cookie-parser';
 import { AuthModule } from './auth/auth/auth.module';
 import { ClientModule } from './client/client.module';
+import helmet from 'helmet';
+import { LoggerMiddleware } from './config/logger.middleware';
 
 @Module({
   imports: [UsersModule, AuthModule, ClientModule],
@@ -14,6 +16,6 @@ import { ClientModule } from './client/client.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser());
+    consumer.apply(cookieParser(), helmet(), LoggerMiddleware).forRoutes('*');
   }
 }

@@ -10,6 +10,7 @@ export class AuthService {
     private prisma: ConnectionService,
     private readonly jwtService: JwtService,
   ) {}
+
   async login(authDto: AuthDto) {
     const { email, password } = authDto;
 
@@ -35,9 +36,11 @@ export class AuthService {
       const payload = { email: userFind.email };
       const token = await this.jwtService.signAsync(payload);
 
+      // Además del token y el email, también devolvemos el nombre del usuario si está disponible
       return {
         token,
-        email,
+        email: userFind.email,
+        name: userFind.name, // Asumiendo que el usuario tiene un campo 'name'
       };
     } catch (error) {
       throw new Error(error.message);
