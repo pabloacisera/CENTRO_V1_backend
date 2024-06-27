@@ -21,7 +21,7 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Post()
-  @UseGuards(ProtectedRouteGuard)
+  //@UseGuards(ProtectedRouteGuard)
   create(@Body() createClientDto: CreateClientDto) {
     try {
       return this.clientService.create(createClientDto);
@@ -31,7 +31,7 @@ export class ClientController {
   }
 
   @Get()
-  @UseGuards(ProtectedRouteGuard)
+  //@UseGuards(ProtectedRouteGuard)
   findAll() {
     try {
       return this.clientService.findAll();
@@ -41,7 +41,7 @@ export class ClientController {
   }
 
   @Get(':id')
-  @UseGuards(ProtectedRouteGuard)
+  //@UseGuards(ProtectedRouteGuard)
   findOne(@Param('id') id: string) {
     try {
       return this.clientService.findOne(+id);
@@ -55,17 +55,25 @@ export class ClientController {
   }
 
   @Patch(':id')
-  @UseGuards(ProtectedRouteGuard)
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  //@UseGuards(ProtectedRouteGuard)
+  async update(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientDto,
+  ) {
     try {
-      return this.clientService.update(+id, updateClientDto);
+      const updatedClient = await this.clientService.update(
+        +id,
+        updateClientDto,
+      );
+      return updatedClient;
     } catch (error) {
+      console.error('Error al actualizar el cliente:', error);
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @Delete(':id')
-  @UseGuards(ProtectedRouteGuard)
+  //@UseGuards(ProtectedRouteGuard)
   remove(@Param('id') id: string) {
     try {
       return this.clientService.remove(+id);

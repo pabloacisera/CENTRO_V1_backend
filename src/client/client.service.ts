@@ -15,7 +15,7 @@ export class ClientService {
   async create(clientDto: CreateClientDto) {
     if (
       !clientDto.name ||
-      !clientDto.socialSecurityNumber ||
+      !clientDto.socialsecuritynumber ||
       !clientDto.email
     ) {
       throw new BadRequestException('Invalid Request Data');
@@ -25,14 +25,14 @@ export class ClientService {
         data: {
           name: clientDto.name,
           surname: clientDto.surname,
-          socialsecuritynumber: clientDto.socialSecurityNumber,
+          socialsecuritynumber: clientDto.socialsecuritynumber,
           dateofbirth: clientDto.toDateOfbirth().toISOString(),
           age: clientDto.age,
           address: clientDto.address,
           location: clientDto.location,
           phone: clientDto.phone,
           email: clientDto.email,
-          healthinsurance: clientDto.healthInsurance,
+          healthinsurance: clientDto.healthinsurance,
           observation: clientDto.observation,
           turno: clientDto.turno,
         },
@@ -70,10 +70,14 @@ export class ClientService {
     try {
       const response = await this.prisma.client.update({
         where: { id },
-        data: updateClientDto,
+        data: {
+          ...updateClientDto,
+          dateofbirth: new Date(updateClientDto.dateofbirth), // Asegúrate de convertir la fecha si es necesario
+        },
       });
       return response;
     } catch (error) {
+      console.error('Error al actualizar el cliente:', error);
       throw new InternalServerErrorException('Error al actualizar el cliente');
     }
   }

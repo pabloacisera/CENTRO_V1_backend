@@ -8,13 +8,13 @@ export class CreateClientDto {
   surname: string;
 
   @IsString()
-  socialSecurityNumber: string;
+  socialsecuritynumber: string;
 
   @IsString()
-  dateOfbirth: string;
+  dateofbirth: string;
 
   toDateOfbirth(): Date {
-    return new Date(this.dateOfbirth);
+    return new Date(this.dateofbirth);
   }
 
   @IsString()
@@ -33,7 +33,7 @@ export class CreateClientDto {
   email: string;
 
   @IsString()
-  healthInsurance: string;
+  healthinsurance: string;
 
   @IsString()
   observation: string;
