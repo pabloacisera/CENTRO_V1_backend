@@ -40,6 +40,7 @@ model Client {
   archivos         Archivo[]
   resultados       Result[] 
   users            UserClient[]
+  createdAt       DateTime @default(now()) // Agregamos esta columna
 }
 
 model UserClient {

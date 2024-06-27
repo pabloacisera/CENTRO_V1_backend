@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, IsDate } from 'class-validator';
 
 export class CreateClientDto {
   @IsString()
