@@ -70,10 +70,12 @@ model Result {
 model Nomenclatura {
   id            Int      @id @default(autoincrement())
   codigo        Int
-  determinacion String
-  unidadBase    String   @map("U.B")
-  valor         Int
+  determinacion String?
+  unidadBase    Int?   @map("U.B")
+  valor         Int?
+  @@map("Nomenclatura") // Esto asegura que la tabla se llama "Nomenclatura"
 }
+
 
 model Archivo {
   id        Int      @id @default(autoincrement())

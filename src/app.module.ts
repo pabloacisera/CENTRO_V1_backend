@@ -8,9 +8,10 @@ import { AuthModule } from './auth/auth/auth.module';
 import { ClientModule } from './client/client.module';
 import helmet from 'helmet';
 import { LoggerMiddleware } from './config/logger.middleware';
+import { NomenclaturaModule } from './nomenclatura/nomenclatura.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, ClientModule],
+  imports: [UsersModule, AuthModule, ClientModule, NomenclaturaModule],
   controllers: [AppController],
   providers: [AppService, ConnectionService],
 })
