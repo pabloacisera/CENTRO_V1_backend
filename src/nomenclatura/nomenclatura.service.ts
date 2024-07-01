@@ -16,7 +16,34 @@ export class NomenclaturaService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} nomenclatura`;
+  async buscarPorCodigo(codigo: number) {
+    try {
+      const response = await this.prisma.nomenclatura.findFirst({
+        where: {
+          codigo,
+        },
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Error al obtener codigo');
+    }
+  }
+
+  async buscarPorDeterminacion(determinacion: string) {
+    try {
+      const response = await this.prisma.nomenclatura.findMany({
+        where: {
+          determinacion: {
+            contains: determinacion.toUpperCase(), // Convert to uppercase for case-insensitive search
+          },
+        },
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException('Error al obtener determinacion');
+    }
   }
 }

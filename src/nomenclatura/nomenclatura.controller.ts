@@ -10,8 +10,13 @@ export class NomenclaturaController {
     return this.nomenclaturaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.nomenclaturaService.findOne(+id);
+  @Get(':codigo')
+  async buscarPorCodigo(@Param('codigo') codigo: number) {
+    return this.nomenclaturaService.buscarPorCodigo(codigo);
+  }
+
+  @Get('/text/:determinacion')
+  async buscarPorDeterminacion(@Param('determinacion') determinacion: string) {
+    return this.nomenclaturaService.buscarPorDeterminacion(determinacion);
   }
 }
